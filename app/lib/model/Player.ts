@@ -1,9 +1,7 @@
 import Solid2D from "./abstract/Solid2D";
 import MoveCommand from "../commands/MoveCommand";
-import Observable from "./interfaces/Observable";
-import Observer from "./interfaces/Observer";
 
-class Player extends Solid2D implements Observable {
+class Player extends Solid2D {
 
   constructor(width: number, height: number, context: HTMLCanvasElement) {
     let initialX = (context.width - width) / 2;

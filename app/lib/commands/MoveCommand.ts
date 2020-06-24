@@ -13,16 +13,24 @@ class MoveCommand implements BaseCommand {
   }
 
   execute(): [number, number] {
-    let nextPosition = this.x + this.moveable.width;
+    let nextPositionX = this.x + this.moveable.width;
+    let nextPositionY = this.y + this.moveable.height;
 
     if (this.x < 0) {
       this.x = 0;
-    } else if (nextPosition > this.moveable.context.width) {
+    } else if (nextPositionX > this.moveable.context.width) {
       this.x = Math.abs(this.moveable.context.width - this.moveable.width);
+    }
+
+    if (this.y < 0) {
+      this.y = 0;
+    } else if (nextPositionY > this.moveable.context.height) {
+      this.y = Math.abs(this.moveable.context.height - this.moveable.height);
     }
 
     return [this.x, this.y];
   }
+
 }
 
 export default MoveCommand;
