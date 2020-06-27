@@ -1,5 +1,5 @@
 import BaseGamepad from "../BaseGamepad";
-import { KeyboardAction, ArrowAction } from "../../../enums/GamepadActions";
+import { KeyboardAction, ArrowAction, GamepadListener } from "../../../enums/GamepadActions";
 import Player from "../../Player";
 
 class DesktopGamepad extends BaseGamepad {
@@ -7,11 +7,11 @@ class DesktopGamepad extends BaseGamepad {
   readonly steps: number;
   
   constructor(player: Player) {
-    super();
+    super(GamepadListener.KEYBOARD);
     this.player = player;
     this.steps = Math.floor(player.context.width / 15);
   }
-
+  
   processCommand(pressed: KeyboardEvent) {
     this.doAction(pressed)
   }

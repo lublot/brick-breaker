@@ -15,6 +15,3 @@ const gameboard = new Gameboard(document.querySelector("#gameboard"));
 // gameboard.attachToContext(ball);
 // ball.start();
 
-// if (document.fullscreenEnabled) {
-//   document.documentElement.requestFullscreen()
-// }

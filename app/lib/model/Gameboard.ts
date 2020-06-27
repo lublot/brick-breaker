@@ -23,24 +23,12 @@ class Gameboard implements Observer {
     this.gamepad = new GamepadFactory(this.player).create();
 
     this.attachToContext(this.player)
-    this.attachControls()
   }
 
   attachToContext(paintable: Solid2D) {
     this.attached.push(paintable);
     paintable.attach(this);
     paintable.paint();
-  }
-
-  private attachControls() {
-    this.canvas.addEventListener("keydown", function (evt: KeyboardEvent) {
-      this.processCommand(evt);
-    }.bind(this));
-    
-    this.canvas.addEventListener("touchstart", function (evt: TouchEvent) {
-      evt.preventDefault()
-      this.processCommand(evt);
-    }.bind(this))
   }
 
   update(state: any, args?: any): void {
