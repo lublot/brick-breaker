@@ -1,6 +1,6 @@
 import Ball from "../model/Ball";
 
-class BallFactory {
+class BallFactory{
   readonly width: number;
   readonly height: number;
   readonly context: HTMLCanvasElement;
