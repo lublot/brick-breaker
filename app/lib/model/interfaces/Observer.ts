@@ -1,5 +1,7 @@
+import Observable from "./Observable";
+
 interface Observer{
-  update(state: any, args?: any) : void
+  update(observable: Observable, args?: any) : void
 }
 
 export default Observer

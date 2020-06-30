@@ -12,6 +12,7 @@ class Player extends Solid2D {
 
   paint(): void {
     let context = this.context.getContext("2d");
+    context.fillStyle = "#000000"
     context.fillRect(this.x, this.y, this.width, this.height);
   }
 
@@ -20,6 +21,8 @@ class Player extends Solid2D {
     this.x = command.execute()[0];
     this.notify()
   }
+
+  destroy() {}
 }
 
 export default Player;

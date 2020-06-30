@@ -4,6 +4,7 @@ import Solid2D from "./abstract/Solid2D";
 import BaseGamepad from "./abstract/BaseGamepad";
 import GamepadFactory from "../factories/GamepadFactory";
 import PlayerFactory from "../factories/PlayerFactory";
+import BlockFactory from "../factories/BlockFactory";
 import Player from "./Player";
 
 class Gameboard implements Observer {
@@ -14,15 +15,24 @@ class Gameboard implements Observer {
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
+    this.prepareScene()
+
     this.attached = [];
-    this.player = new PlayerFactory(
-      48,
-      6,
-      document.querySelector("#gameboard")
-    ).create();
+    this.player = new PlayerFactory(300, 50, this.canvas).create();
     this.gamepad = new GamepadFactory(this.player).create();
 
-    this.attachToContext(this.player)
+    let blocks = new BlockFactory(4, this.canvas).create();
+       
+    blocks.forEach((block) => {
+      this.attachToContext(block);
+    });
+    
+    this.attachToContext(this.player);
+  }
+
+  private prepareScene() {
+    this.canvas.width = window.innerWidth
+    this.canvas.height = window.innerHeight
   }
 
   attachToContext(paintable: Solid2D) {
