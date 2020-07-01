@@ -6,6 +6,7 @@ import GamepadFactory from "../factories/GamepadFactory";
 import PlayerFactory from "../factories/PlayerFactory";
 import BlockFactory from "../factories/BlockFactory";
 import Player from "./Player";
+import Block, { BrickActions } from "./Block"
 
 class Gameboard implements Observer {
   readonly canvas: HTMLCanvasElement;
@@ -42,6 +43,12 @@ class Gameboard implements Observer {
   }
 
   update(state: any, args?: any): void {
+    if (state instanceof Block) {
+      if (args.action == BrickActions.DESTROY) {
+        let index = this.attached.indexOf(state)
+        this.attached.splice(index, 1)
+      }
+    }
     this.repaint();
   }
 

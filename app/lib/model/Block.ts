@@ -2,28 +2,37 @@ import Solid2D from "./abstract/Solid2D";
 
 class Brick extends Solid2D{
   private weight: number
-  private color: string
+  private sprite: HTMLImageElement
 
   constructor(x: number, y: number, length: number, context: HTMLCanvasElement, weight: BrickWeight) {
     super(x, y, length, length, context)
     this.weight = weight
-    this.setColor(weight)
+    this.setSprite(weight)
+    setTimeout(() => {
+      console.log(`Destroy at: ${this.x} ${this.y}`)
+      this.destroy()
+    }, Math.random() * 10000)
   }
 
-  private setColor(weight: BrickWeight) {
+  private setSprite(weight: BrickWeight) {
+    let image = new Image()
+    
     switch (weight) {
       case BrickWeight.LOW:
-        this.color = BrickColors.LOW
+        image.src = "./dist/sprites/" + BrickSprite.LOW
         break;
       case BrickWeight.MEDIUM:
-        this.color = BrickColors.MEDIUM
+        image.src = "./dist/sprites/" + BrickSprite.MEDIUM
         break;
       case BrickWeight.HIGH:
-        this.color = BrickColors.HIGH
+        image.src = "./dist/sprites/" + BrickSprite.HIGH
         break;
       case BrickWeight.HUGE:
-        this.color = BrickColors.HUGE
+        image.src = "./dist/sprites/" + BrickSprite.HUGE
         break;
+    }
+    image.onload = () => {
+      this.sprite = image
     }
   }
 
@@ -31,8 +40,9 @@ class Brick extends Solid2D{
     let context = this.context.getContext("2d");
     context.strokeStyle = "#000000"
     context.strokeRect(this.x, this.y, this.width, this.height)
-    context.fillStyle = this.color
-    context.fillRect(this.x, this.y, this.width, this.height);
+    context.drawImage(this.sprite, this.x, this.y, this.width, this.height)
+    // context.fillStyle = this.sprite
+    // context.fillRect(this.x, this.y, this.width, this.height);
   }
   
   destroy(): void {
@@ -53,9 +63,9 @@ export enum BrickWeight {
   HUGE = 50
 }
 
-enum BrickColors {
-  LOW = "#dddddd",
-  MEDIUM = "#00ff00",
-  HIGH = "#0000ff",
-  HUGE = "#ff0000"
+enum BrickSprite {
+  LOW = "1.png",
+  MEDIUM = "2.png",
+  HIGH = "3.png",
+  HUGE = "4.png"
 }
