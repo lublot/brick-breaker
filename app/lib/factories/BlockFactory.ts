@@ -6,7 +6,7 @@ class BlockFactory{
   constructor(lines: number, context: HTMLCanvasElement) {
     this.lines = lines
     this.context = context
-    this.blocksPerColumn = 25
+    this.blocksPerColumn = 30
   }
 
   create() : Array<Block> {

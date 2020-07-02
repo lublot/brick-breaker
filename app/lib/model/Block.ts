@@ -1,6 +1,10 @@
 import Solid2D from "./abstract/Solid2D";
+import Observer from "./interfaces/Observer";
+import Observable from "./interfaces/Observable";
+import Ball, { BallActions } from "./Ball";
+import SpriteLoader from "../utils/SpriteLoader"
 
-class Brick extends Solid2D{
+class Brick extends Solid2D implements Observer{
   private weight: number
   private sprite: HTMLImageElement
 
@@ -8,45 +12,46 @@ class Brick extends Solid2D{
     super(x, y, length, length, context)
     this.weight = weight
     this.setSprite(weight)
-    setTimeout(() => {
-      console.log(`Destroy at: ${this.x} ${this.y}`)
-      this.destroy()
-    }, Math.random() * 10000)
   }
-
+  
   private setSprite(weight: BrickWeight) {
     let image = new Image()
     
     switch (weight) {
       case BrickWeight.LOW:
-        image.src = "./dist/sprites/" + BrickSprite.LOW
+        image.src = SpriteLoader.load(BrickSprite.LOW)
         break;
       case BrickWeight.MEDIUM:
-        image.src = "./dist/sprites/" + BrickSprite.MEDIUM
+        image.src = SpriteLoader.load(BrickSprite.MEDIUM)
         break;
       case BrickWeight.HIGH:
-        image.src = "./dist/sprites/" + BrickSprite.HIGH
+        image.src = SpriteLoader.load(BrickSprite.HIGH)
         break;
       case BrickWeight.HUGE:
-        image.src = "./dist/sprites/" + BrickSprite.HUGE
+        image.src = SpriteLoader.load(BrickSprite.HUGE)
         break;
     }
-    image.onload = () => {
-      this.sprite = image
+    this.sprite = image
+  }
+
+  update(observable: Observable, args?: any): void {
+    if (observable instanceof Ball) {
+      if (args.action == BallActions.MOVE) {
+        if (this.isColliding(observable)) {
+          this.destroy()
+        }
+      }
     }
   }
 
   paint() {
     let context = this.context.getContext("2d");
-    context.strokeStyle = "#000000"
-    context.strokeRect(this.x, this.y, this.width, this.height)
     context.drawImage(this.sprite, this.x, this.y, this.width, this.height)
-    // context.fillStyle = this.sprite
-    // context.fillRect(this.x, this.y, this.width, this.height);
   }
   
   destroy(): void {
     this.notify({ action: BrickActions.DESTROY })
+    super.destroy()
   }
 }
 

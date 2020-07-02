@@ -8,7 +8,7 @@ abstract class Solid2D extends Observable implements Paintable {
   readonly width: number;
   readonly height: number;
   readonly context: HTMLCanvasElement;
-  private observables: Array<Observer>;
+  protected observers: Array<Observer>;
 
   constructor(
     x: number,
@@ -23,28 +23,53 @@ abstract class Solid2D extends Observable implements Paintable {
     this.width = width + 0.5;
     this.height = height + 0.5;
     this.context = context;
-    this.observables = [];
+    this.observers = [];
   }
 
   attach(observer: Observer): void {
-    this.observables.push(observer);
+    this.observers.push(observer);
   }
 
   detach(observer: Observer): void {
-    let index = this.observables.indexOf(observer);
+    let index = this.observers.indexOf(observer);
 
     if (index > -1) {
-      this.observables.splice(index, 1);
+      this.observers.splice(index, 1);
     }
   }
 
   protected notify(args?: any): void {
-    this.observables.forEach((observer) => observer.update(this, args));
+    this.observers.forEach((observer) => observer.update(this, args));
   }
 
-  paint(): void {}
+  protected isColliding(solid: Solid2D) : Boolean {
+    let s1 = this
+    let s2 = solid
+    
+    if (
+      s1.x < s2.x + s2.width &&
+      s1.x + s1.width > s2.x &&
+      s1.y < s2.y + s2.height &&
+      s1.y + s1.height > s2.y
+    ) {
+      return true
+    }
+    return false
+  }
 
-  abstract destroy(): void;
+  getX () : number {
+    return this.x
+  }
+
+  getY () : number {
+    return this.y
+  }
+
+  paint(): void { }
+
+  destroy(): void {
+    this.observers.forEach(observer => this.detach(observer))
+  }
 }
 
 export default Solid2D;
