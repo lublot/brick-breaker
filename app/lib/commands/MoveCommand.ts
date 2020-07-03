@@ -12,6 +12,11 @@ class MoveCommand implements BaseCommand {
     this.moveable = moveable;
   }
 
+  /**
+   * This method evaluates the gameboard context bounds and set the new position of a Solid2D.
+   * 
+   * @return {[number, number]} - Returns an array containing x and y position.
+   */
   execute(): [number, number] {
     let nextPositionX = this.x + this.moveable.width;
     let nextPositionY = this.y + this.moveable.height;
@@ -30,7 +35,6 @@ class MoveCommand implements BaseCommand {
 
     return [this.x, this.y];
   }
-
 }
 
 export default MoveCommand;

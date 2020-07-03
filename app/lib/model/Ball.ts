@@ -13,13 +13,12 @@ class Ball extends Solid2D {
 
   constructor(width: number, height: number, context: HTMLCanvasElement) {
     let initialX = context.width / 2;
-    console.log(context.width)
     let staticY = context.height / 2;
     let image = new Image();
     super(initialX, staticY, width, height, context);
     image.src = MediaLoader.loadSprite("ball.png");
     this.sprite = image;
-    this.velocity = 10;
+    this.velocity = 5;
     this.dx = this.velocity;
     this.dy = this.velocity;
     this.move();

@@ -1,17 +1,17 @@
-import Observer from "../utils/interfaces/Observer";
-import Paintable from "../utils/interfaces/Paintable";
-import Solid2D from "./abstract/Solid2D";
-import BaseGamepad from "./abstract/BaseGamepad";
+import { HorizontalDirection, VerticalDirection } from "../enums/Direction";
+import GameEvent from "../enums/GameEvent";
+import BallFactory from "../factories/BallFactory";
+import BrickFactory from "../factories/BrickFactory";
 import GamepadFactory from "../factories/GamepadFactory";
 import PlayerFactory from "../factories/PlayerFactory";
-import BrickFactory from "../factories/BrickFactory";
-import BallFactory from "../factories/BallFactory";
-import Player from "./Player";
-import Brick from "./Brick";
-import Ball from "./Ball";
-import GameEvent from "../enums/GameEvent";
 import GameStorage from "../utils/GameStorage";
-import { HorizontalDirection, VerticalDirection } from "../enums/Direction";
+import Observer from "../utils/interfaces/Observer";
+import Paintable from "../utils/interfaces/Paintable";
+import BaseGamepad from "./abstract/BaseGamepad";
+import Solid2D from "./abstract/Solid2D";
+import Ball from "./Ball";
+import Brick, { BrickWeight } from "./Brick";
+import Player from "./Player";
 
 class Gameboard implements Observer {
   readonly canvas: HTMLCanvasElement;
@@ -69,6 +69,15 @@ class Gameboard implements Observer {
           this.ball.detach(state);
           this.unbind(state);
           this.points += state.weight;
+          if (
+            state.weight == BrickWeight.HIGH ||
+            state.weight == BrickWeight.HUGE
+          ) {
+            this.ball.changeDirection(
+              HorizontalDirection.CURRENT,
+              VerticalDirection.DOWN
+            );
+          }
           GameStorage.saveRecord(this.points);
           this.generateBricks();
         }

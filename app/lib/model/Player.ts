@@ -1,10 +1,10 @@
-import Solid2D from "./abstract/Solid2D";
 import MoveCommand from "../commands/MoveCommand";
-import MediaLoader from "../utils/MediaLoader";
-import Observer from "../utils/interfaces/Observer";
-import Observable from "../utils/interfaces/Observable";
-import Ball from "./Ball";
 import GameEvent from "../enums/GameEvent";
+import Observable from "../utils/interfaces/Observable";
+import Observer from "../utils/interfaces/Observer";
+import MediaLoader from "../utils/MediaLoader";
+import Solid2D from "./abstract/Solid2D";
+import Ball from "./Ball";
 
 class Player extends Solid2D implements Observer {
   private sprite: HTMLImageElement;
