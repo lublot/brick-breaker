@@ -1,44 +1,49 @@
 import Solid2D from "./abstract/Solid2D";
 import MoveCommand from "../commands/MoveCommand";
-import SpriteLoader from "../utils/SpriteLoader";
-import Observer from "./interfaces/Observer";
-import Observable from "./interfaces/Observable";
-import Ball, { BallActions } from "./Ball";
+import MediaLoader from "../utils/MediaLoader";
+import Observer from "../utils/interfaces/Observer";
+import Observable from "../utils/interfaces/Observable";
+import Ball from "./Ball";
+import GameEvent from "../enums/GameEvent";
 
-class Player extends Solid2D implements Observer{
+class Player extends Solid2D implements Observer {
+  private sprite: HTMLImageElement;
+  private sound: HTMLAudioElement;
 
-  private sprite: HTMLImageElement
-  
   constructor(width: number, height: number, context: HTMLCanvasElement) {
     let initialX = (context.width - width) / 2;
     let staticY = context.height - height;
-    let image = new Image
     super(initialX, staticY, width, height, context);
+    this.initializeMedia();
     this.move(0);
-    image.src = SpriteLoader.load("player.png")
-    this.sprite = image
   }
-  
-  update(observable: Observable, args?: any): void {
+
+  private initializeMedia() {
+    let image = new Image();
+    image.src = MediaLoader.loadSprite("player.png");
+    this.sprite = image;
+    this.sound = new Audio(MediaLoader.loadSound("player.ogg"));
+    this.sound.volume = 0.15
+  }
+
+  update(observable: Observable, args?: GameEvent): void {
     if (observable instanceof Ball) {
-      if (args.action == BallActions.MOVE) {
-        if (this.isColliding(observable)) {
-          console.log("Tocou")
-          this.destroy()
-        }
+      if (args == GameEvent.BALL_MOVED && this.isColliding(observable)) {
+        this.sound.play();
+        this.notify(GameEvent.BALL_PLAYER_COLLISION);
       }
     }
   }
 
   paint(): void {
     let context = this.context.getContext("2d");
-    context.drawImage(this.sprite, this.x, this.y, this.width, this.height)
+    context.drawImage(this.sprite, this.x, this.y, this.width, this.height);
   }
 
   move(dx: number) {
     let command = new MoveCommand(this.x + dx, this.y, this);
     this.x = command.execute()[0];
-    this.notify()
+    this.notify();
   }
 
   destroy() {}

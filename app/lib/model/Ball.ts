@@ -1,27 +1,27 @@
 import Solid2D from "./abstract/Solid2D";
 import MoveCommand from "../commands/MoveCommand";
-import SpriteLoader from "../utils/SpriteLoader";
+import MediaLoader from "../utils/MediaLoader";
+import GameEvent from "../enums/GameEvent";
+import { HorizontalDirection, VerticalDirection } from "../enums/Direction"
 
 class Ball extends Solid2D {
-  private directionX: number;
-  private directionY: number;
+  readonly velocity: number;
+  private dx: number;
+  private dy: number;
   private sprite: HTMLImageElement;
-  private gravity: number;
-  private gravitySpeed: number;
-  private timer: number
+  private timer: number;
 
   constructor(width: number, height: number, context: HTMLCanvasElement) {
-    let initialX = (context.width - width) / 2;
-    let staticY = context.height - height;
+    let initialX = context.width / 2;
+    console.log(context.width)
+    let staticY = context.height / 2;
     let image = new Image();
     super(initialX, staticY, width, height, context);
-    image.src = SpriteLoader.load("ball.png");
+    image.src = MediaLoader.loadSprite("ball.png");
     this.sprite = image;
-    this.x = 0;
-    this.directionX = 1;
-    this.directionY = 1;
-    this.gravity = 0.5;
-    this.gravitySpeed = 0;
+    this.velocity = 10;
+    this.dx = this.velocity;
+    this.dy = this.velocity;
     this.move();
   }
 
@@ -34,10 +34,20 @@ class Ball extends Solid2D {
     this.timer = setInterval(() => this.move(), 12);
   }
 
+  changeDirection(x: HorizontalDirection, y: VerticalDirection) {
+    if (x != HorizontalDirection.CURRENT) {
+      this.dx = this.velocity * x
+    }
+
+    if (y != VerticalDirection.CURRENT) {
+      this.dy = this.velocity * y;
+    }
+  }
+
   move() {
     let command = new MoveCommand(
-      this.x + 10 * this.directionX,
-      this.y + 10 * this.gravitySpeed,
+      this.x + this.dx,
+      this.y + this.dy,
       this
     );
     let result = command.execute();
@@ -45,31 +55,25 @@ class Ball extends Solid2D {
     this.y = result[1];
 
     if (this.x + this.width >= this.context.width) {
-      this.directionX = -1;
+      this.changeDirection(HorizontalDirection.LEFT, VerticalDirection.CURRENT)
     } else if (this.x == 0) {
-      this.directionX = 1;
+      this.changeDirection(HorizontalDirection.RIGHT, VerticalDirection.CURRENT)
     }
 
     if (this.y + this.height >= this.context.height) {
-      this.gravitySpeed -= this.gravity;
       this.destroy();
     } else if (this.y == 0) {
-      this.gravitySpeed += this.gravity + Math.random();
+      this.changeDirection(HorizontalDirection.CURRENT, VerticalDirection.DOWN)
     }
 
-    this.notify({ action: BallActions.MOVE });
+    this.notify(GameEvent.BALL_MOVED);
   }
 
   destroy() {
-    this.notify({ action: BallActions.DESTROY });
-    clearInterval(this.timer)
-    this.observers.forEach(observer => this.detach(observer))
+    this.notify(GameEvent.BALL_FLOOR_COLLISION);
+    clearInterval(this.timer);
+    this.observers.forEach((observer) => this.detach(observer));
   }
 }
 
 export default Ball;
-
-export enum BallActions {
-  MOVE,
-  DESTROY,
-}

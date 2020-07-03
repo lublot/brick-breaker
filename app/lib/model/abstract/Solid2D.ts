@@ -1,6 +1,6 @@
-import Paintable from "../interfaces/Paintable";
-import Observable from "../interfaces/Observable";
-import Observer from "../interfaces/Observer";
+import Paintable from "../../utils/interfaces/Paintable";
+import Observable from "../../utils/interfaces/Observable";
+import Observer from "../../utils/interfaces/Observer";
 
 abstract class Solid2D extends Observable implements Paintable {
   protected x: number;
@@ -42,33 +42,30 @@ abstract class Solid2D extends Observable implements Paintable {
     this.observers.forEach((observer) => observer.update(this, args));
   }
 
-  protected isColliding(solid: Solid2D) : Boolean {
-    let s1 = this
-    let s2 = solid
-    
+  protected isColliding(solid: Solid2D): Boolean {
     if (
-      s1.x < s2.x + s2.width &&
-      s1.x + s1.width > s2.x &&
-      s1.y < s2.y + s2.height &&
-      s1.y + s1.height > s2.y
+      this.x < solid.x + solid.width &&
+      this.x + this.width > solid.x &&
+      this.y < solid.y + solid.height &&
+      this.y + this.height > solid.y
     ) {
-      return true
+      return true;
     }
-    return false
+    return false;
   }
 
-  getX () : number {
-    return this.x
+  getX(): number {
+    return this.x;
   }
 
-  getY () : number {
-    return this.y
+  getY(): number {
+    return this.y;
   }
 
-  paint(): void { }
+  paint(): void {}
 
   destroy(): void {
-    this.observers.forEach(observer => this.detach(observer))
+    this.observers.forEach((observer) => this.detach(observer));
   }
 }
 
